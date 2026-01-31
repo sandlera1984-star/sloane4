@@ -452,6 +452,7 @@
     let agreeConfirmed = false;
     let ageConfirmed = false;
     let termsAccepted = false;
+    let termsShown = false;
 
     const showPage = (pageId) => {
       pages.forEach((page) => page.classList.remove('active'));
@@ -492,11 +493,14 @@
       termsActions.style.display = 'none';
       agreeButton.disabled = true;
       ageButton.disabled = true;
+      termsShown = true;
     };
 
     const ensureTermsAccepted = (action) => {
       if (!termsAccepted) {
-        showTermsModal();
+        if (!termsShown) {
+          showTermsModal();
+        }
         return;
       }
       action();
