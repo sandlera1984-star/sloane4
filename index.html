@@ -609,17 +609,8 @@
       });
     });
 
-    document.querySelectorAll('button').forEach((button) => {
-      const isTermsButton = button.id === 'agreeButton' || button.id === 'ageButton';
-      if (isTermsButton) {
-        return;
-      }
-      button.addEventListener('click', () => {
-        if (!termsAccepted) {
-          showTermsModal();
-        }
-      });
-    });
+    // Terms modal is only triggered on the first button interaction via ensureTermsAccepted,
+    // so it never appears again after acceptance.
   </script>
 </body>
 </html>
