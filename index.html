@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sloane4</title>
+  <style>
+    :root {
+      --pink: #ff5fa2;
+      --purple: #6f2dbd;
+      --deep-purple: #3a0f6f;
+      --white: #ffffff;
+      --dark: #1b1b1b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Arial", sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    header h1 {
+      font-size: 24px;
+      color: var(--white);
+    }
+
+    nav {
+      display: flex;
+      gap: 12px;
+    }
+
+    button,
+    .nav-button {
+      background: var(--pink);
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      color: var(--white);
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover,
+    .nav-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    main {
+      padding: 40px 32px 80px;
+    }
+
+    .page {
+      display: none;
+      min-height: 70vh;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .landing-hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+      align-items: center;
+      margin-top: 24px;
+    }
+
+    .landing-hero h2 {
+      font-size: 42px;
+      margin-bottom: 16px;
+    }
+
+    .landing-hero p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .signup-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .signup-row span {
+      font-size: 18px;
+      color: var(--white);
+    }
+
+    .admin-panel {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 24px;
+      border: 2px dashed rgba(255, 255, 255, 0.4);
+    }
+
+    .admin-panel h3 {
+      margin-bottom: 12px;
+      color: var(--white);
+    }
+
+    .admin-panel label {
+      display: block;
+      margin: 12px 0 8px;
+    }
+
+    .admin-panel input[type="file"] {
+      width: 100%;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      color: var(--white);
+    }
+
+    .note {
+      font-size: 14px;
+      margin-top: 12px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .sidebar-layout {
+      display: flex;
+      min-height: 60vh;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 220px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 24px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sidebar button {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    .sidebar-content {
+      flex: 1;
+      padding: 32px;
+    }
+
+    .exclusive-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 60vh;
+    }
+
+    .exclusive-content h2 {
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--pink);
+      text-align: center;
+    }
+
+    .silhouette {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 16px;
+      cursor: pointer;
+    }
+
+    .silhouette svg {
+      width: 100%;
+      height: 100%;
+      fill: #000000;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .modal {
+      background: var(--deep-purple);
+      padding: 24px;
+      border-radius: 20px;
+      width: min(90%, 520px);
+      color: var(--white);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      position: relative;
+      text-align: center;
+    }
+
+    .circle-modal {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--purple);
+      color: var(--pink);
+      font-weight: bold;
+      font-size: 20px;
+      border: 4px solid var(--pink);
+    }
+
+    .terms-modal {
+      width: min(92%, 640px);
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .terms-scroll {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 16px;
+      border-radius: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .terms-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .terms-actions button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .contact-modal {
+      width: min(92%, 620px);
+      text-align: left;
+    }
+
+    .contact-modal h3 {
+      margin-bottom: 12px;
+    }
+
+    .contact-modal label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: bold;
+    }
+
+    .contact-modal input,
+    .contact-modal select,
+    .contact-modal textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--white);
+    }
+
+    .contact-modal textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .word-count {
+      margin-top: 8px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .send-button {
+      margin-top: 18px;
+      width: 100%;
+      border-radius: 14px;
+    }
+
+    @media (max-width: 700px) {
+      header {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .sidebar-layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="logoHome" style="cursor: pointer;">Sloane4</h1>
+    <nav>
+      <button class="nav-button" data-target="home">Home</button>
+      <button class="nav-button" data-target="exclusive">Exclusive Content</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="landing" class="page active">
+      <div class="landing-hero">
+        <div>
+          <h2>Creator-First Exclusive Hub</h2>
+          <p>Welcome to your pink & purple premium landing page experience. Fans join for exclusive updates, while creators manage their uploads in a secure admin-only space.</p>
+          <div class="signup-row">
+            <button id="signupButton">Sign Up</button>
+            <span>5 CAD a month</span>
+          </div>
+        </div>
+        <div class="admin-panel">
+          <h3>Admin Uploads Only</h3>
+          <p>Image and video uploads are restricted to admin users.</p>
+          <label for="imageUpload">Upload Images</label>
+          <input id="imageUpload" type="file" accept="image/*" disabled />
+          <label for="videoUpload">Upload Videos</label>
+          <input id="videoUpload" type="file" accept="video/*" disabled />
+          <p class="note">Admins can enable uploads in the back office. Regular users cannot upload files here.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="home" class="page">
+      <div class="sidebar-layout">
+        <aside class="sidebar">
+          <button data-sidebar="home">Home</button>
+          <button data-sidebar="account">Account</button>
+          <button data-sidebar="support">Support</button>
+          <button data-sidebar="contact" id="contactButton">Contact</button>
+        </aside>
+        <div class="sidebar-content" id="sidebarContent">
+          <h2>Welcome Home</h2>
+          <p>Select a menu option to explore account support tools and contact options.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="exclusive" class="page">
+      <div class="exclusive-content">
+        <div class="silhouette" id="silhouetteHome" title="Return to landing">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 4c-6.1 0-11 4.9-11 11s4.9 11 11 11 11-4.9 11-11S38.1 4 32 4zm0 28c-12.2 0-22 9.8-22 22v6h44v-6c0-12.2-9.8-22-22-22z" />
+          </svg>
+        </div>
+        <h2>Under Construction</h2>
+      </div>
+    </section>
+  </main>
+
+  <div id="signupModal" class="modal-overlay" style="display: none;">
+    <div class="circle-modal">Under Construction</div>
+  </div>
+
+  <div id="contactModal" class="modal-overlay" style="display: none;">
+    <div class="modal contact-modal">
+      <h3>Contact Support</h3>
+      <form id="contactForm">
+        <label for="emailInput">Email</label>
+        <input id="emailInput" type="email" required placeholder="you@example.com" />
+
+        <label for="issueSelect">Issue</label>
+        <select id="issueSelect" required>
+          <option value="" disabled selected>Select an issue</option>
+          <option value="Payment">Payment</option>
+          <option value="Account">Account</option>
+          <option value="Subscription">Subscription</option>
+        </select>
+
+        <label for="descriptionInput">Description</label>
+        <textarea id="descriptionInput" required placeholder="Describe your issue..."></textarea>
+        <div class="word-count" id="wordCount">0 / 200 words</div>
+
+        <button type="submit" class="send-button">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="termsModal" class="modal-overlay">
+    <div class="modal terms-modal">
+      <h3>Terms of Agreement</h3>
+      <div class="terms-scroll" id="termsScroll">
+        <p>By accessing this site, you acknowledge that all content is provided "as is" and for entertainment purposes only. No guarantees are made regarding access, availability, or the continuity of services. Purchases for subscriptions, digital content, and services are final and non-refundable. Chargebacks or disputes will result in account termination.</p>
+        <p>You agree that you are solely responsible for how you use the content, including compliance with all local laws. The platform, creators, and affiliates are not liable for any damages, losses, or claims arising from the use of content or services. Content is intended for adults only, and you confirm that you are of legal age in your jurisdiction.</p>
+        <p>By continuing, you release the platform, its owners, and affiliates from any liability for financial loss, service interruptions, or content disputes. You consent to receive communications related to your account or subscription. These terms may be updated at any time, and continued use signifies acceptance of the latest terms.</p>
+        <p>Scrolling to the bottom of this agreement enables the required confirmation buttons. Both confirmations are mandatory to access the site.</p>
+      </div>
+      <div class="terms-actions">
+        <button id="agreeButton" disabled>Agree</button>
+        <button id="ageButton" disabled>I Am Over 18 Years Of Age</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const pages = document.querySelectorAll('.page');
+    const navButtons = document.querySelectorAll('.nav-button');
+    const signupButton = document.getElementById('signupButton');
+    const signupModal = document.getElementById('signupModal');
+    const contactModal = document.getElementById('contactModal');
+    const contactButton = document.getElementById('contactButton');
+    const contactForm = document.getElementById('contactForm');
+    const descriptionInput = document.getElementById('descriptionInput');
+    const wordCount = document.getElementById('wordCount');
+    const termsModal = document.getElementById('termsModal');
+    const termsScroll = document.getElementById('termsScroll');
+    const agreeButton = document.getElementById('agreeButton');
+    const ageButton = document.getElementById('ageButton');
+    const silhouetteHome = document.getElementById('silhouetteHome');
+    const logoHome = document.getElementById('logoHome');
+
+    let agreeConfirmed = false;
+    let ageConfirmed = false;
+
+    const showPage = (pageId) => {
+      pages.forEach((page) => page.classList.remove('active'));
+      const target = document.getElementById(pageId);
+      if (target) {
+        target.classList.add('active');
+      }
+    };
+
+    const showSignupModal = () => {
+      signupModal.style.display = 'flex';
+      setTimeout(() => {
+        signupModal.style.display = 'none';
+      }, 2000);
+    };
+
+    const openContactModal = () => {
+      contactModal.style.display = 'flex';
+    };
+
+    const closeContactModal = () => {
+      contactModal.style.display = 'none';
+    };
+
+    const updateWordCount = () => {
+      const words = descriptionInput.value.trim().split(/\s+/).filter(Boolean);
+      if (words.length > 200) {
+        descriptionInput.value = words.slice(0, 200).join(' ');
+      }
+      const updatedWords = descriptionInput.value.trim().split(/\s+/).filter(Boolean);
+      wordCount.textContent = `${updatedWords.length} / 200 words`;
+    };
+
+    descriptionInput.addEventListener('input', updateWordCount);
+
+    navButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = button.dataset.target;
+        if (target === 'home') {
+          showPage('home');
+        } else if (target === 'exclusive') {
+          showPage('exclusive');
+        }
+      });
+    });
+
+    silhouetteHome.addEventListener('click', () => showPage('landing'));
+    logoHome.addEventListener('click', () => showPage('landing'));
+
+    signupButton.addEventListener('click', showSignupModal);
+
+    contactButton.addEventListener('click', () => {
+      showPage('home');
+      openContactModal();
+    });
+
+    contactForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const email = document.getElementById('emailInput').value;
+      const issue = document.getElementById('issueSelect').value;
+      const description = document.getElementById('descriptionInput').value;
+      const subject = encodeURIComponent(`Support Request: ${issue}`);
+      const body = encodeURIComponent(`Email: ${email}\nIssue: ${issue}\n\nDescription:\n${description}`);
+      window.location.href = `mailto:insanitbjones@gmail.com?subject=${subject}&body=${body}`;
+      closeContactModal();
+    });
+
+    const handleTermsScroll = () => {
+      if (termsScroll.scrollTop + termsScroll.clientHeight >= termsScroll.scrollHeight) {
+        agreeButton.disabled = false;
+        ageButton.disabled = false;
+      }
+    };
+
+    termsScroll.addEventListener('scroll', handleTermsScroll);
+
+    agreeButton.addEventListener('click', () => {
+      agreeConfirmed = true;
+      agreeButton.style.background = '#24c16f';
+      attemptTermsComplete();
+    });
+
+    ageButton.addEventListener('click', () => {
+      ageConfirmed = true;
+      ageButton.style.background = '#24c16f';
+      attemptTermsComplete();
+    });
+
+    const attemptTermsComplete = () => {
+      if (agreeConfirmed && ageConfirmed) {
+        termsModal.style.display = 'none';
+        showPage('landing');
+      }
+    };
+
+    const blockAccessUntilTerms = () => {
+      termsModal.style.display = 'flex';
+    };
+
+    blockAccessUntilTerms();
+
+    const sidebarContent = document.getElementById('sidebarContent');
+    document.querySelectorAll('[data-sidebar]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const section = button.dataset.sidebar;
+        if (section === 'contact') {
+          openContactModal();
+          return;
+        }
+        const messages = {
+          home: {
+            title: 'Welcome Home',
+            text: 'This is the home section of your sidebar-driven dashboard.',
+          },
+          account: {
+            title: 'Account Settings',
+            text: 'Manage billing details and profile preferences securely.',
+          },
+          support: {
+            title: 'Support Center',
+            text: 'Find FAQs, submit tickets, and get help from our team.',
+          },
+        };
+        const content = messages[section];
+        if (content) {
+          sidebarContent.innerHTML = `<h2>${content.title}</h2><p>${content.text}</p>`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
