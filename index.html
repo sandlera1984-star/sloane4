@@ -256,7 +256,7 @@
     }
 
     .terms-actions {
-      display: flex;
+      display: none;
       gap: 12px;
       justify-content: center;
     }
@@ -424,9 +424,9 @@
         <p>By continuing, you release the platform, its owners, and affiliates from any liability for financial loss, service interruptions, or content disputes. You consent to receive communications related to your account or subscription. These terms may be updated at any time, and continued use signifies acceptance of the latest terms.</p>
         <p>Scrolling to the bottom of this agreement enables the required confirmation buttons. Both confirmations are mandatory to access the site.</p>
       </div>
-      <div class="terms-actions">
-        <button id="agreeButton" disabled>Agree</button>
-        <button id="ageButton" disabled>I Am Over 18 Years Of Age</button>
+      <div class="terms-actions" id="termsActions">
+        <button id="agreeButton">Agree</button>
+        <button id="ageButton">I Am Over 18 Years Of Age</button>
       </div>
     </div>
   </div>
@@ -445,6 +445,7 @@
     const termsScroll = document.getElementById('termsScroll');
     const agreeButton = document.getElementById('agreeButton');
     const ageButton = document.getElementById('ageButton');
+    const termsActions = document.getElementById('termsActions');
     const silhouetteHome = document.getElementById('silhouetteHome');
     const logoHome = document.getElementById('logoHome');
 
@@ -488,6 +489,9 @@
 
     const showTermsModal = () => {
       termsModal.style.display = 'flex';
+      termsActions.style.display = 'none';
+      agreeButton.disabled = true;
+      ageButton.disabled = true;
     };
 
     const ensureTermsAccepted = (action) => {
@@ -542,6 +546,7 @@
 
     const handleTermsScroll = () => {
       if (termsScroll.scrollTop + termsScroll.clientHeight >= termsScroll.scrollHeight) {
+        termsActions.style.display = 'flex';
         agreeButton.disabled = false;
         ageButton.disabled = false;
       }
